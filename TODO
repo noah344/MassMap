@@ -1,0 +1,2 @@
+Implement nmap ping scan first to detect devices that are online, only then should you do masscan.
+Implement backend database to hold all of the data rather than using random files.

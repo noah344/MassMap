@@ -1,0 +1,13 @@
+{
+    "scanners": [
+        {
+            "scanner": "masscan",
+            "location": "/usr/bin/masscan",
+            "port_opt": "--ports=%s",
+            "ip_opt": "--includefile=%s",
+            "rate_opt": "--rate=%s",
+            "output_format_opt": "--output-format=list",
+            "output_filename_opt": "--output-filename=%s",
+            "wait": "--wait=3"
+        }]
+}
