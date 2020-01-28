@@ -19,13 +19,17 @@ def get_args():
     parser = argparse.ArgumentParser(description="Scans a set of IPs quickly and provides detailed output using nmap and masscan.")
     verbosity = parser.add_mutually_exclusive_group()
     mass_args = parser.add_argument_group("Masscan Arguments")
+    nmap_args = parser.add_argument_group("Nmap Arguments")
     req_args = parser.add_argument_group("Required Arguments")
 
     verbosity.add_argument("-v", "--verbose", action="store_true", help="Increases verbosity of the program.", default=False, required=False)
     verbosity.add_argument("-q", "--quiet", action="store_true", help="Decreases the verbosity of the program.", default=False, required=False)
     
-    mass_args.add_argument("-mr", "--mass_rate", type=int, help="Tells masscan the packet rate you wish for it to use. Default is 20000.", default=20000, required=False)
-    mass_args.add_argument("-mp", "--mass_ports", type=str, help="Tells masscan what ports you wish for it to scan. Default is 1-65535.", default="1-65535", required=False)
+    mass_args.add_argument("-mR", "--mass-rate", type=int, help="Tells masscan the packet rate you wish for it to use. Default is 20000.", default=20000, required=False)
+    mass_args.add_argument("-mP", "--mass-ports", type=str, help="Tells masscan what ports you wish for it to scan. Default is 1-65535.", default="1-65535", required=False)
+
+    #TODO: Maybe this shouldn't be default, I dunno.
+    nmap_args.add_argument("-nE", "--no-extra-scans", action="store_true", help="Tells the program that you don't want to conduct extra scans using NSE scripts. This is on by default.", default=False, required=False)
 
     #User can supply either a file or a list of IPs seperated by commas in various formats i.e. 192.168.10.0/24,192.168.10.1-192.168.10.40,192.168.10.24.
     req_args.add_argument("IPs", type=str, help="Provide the full location of an IP file or a comma seperated list of IPs. Can be formatted in any of the following ways: \
@@ -159,8 +163,3 @@ def format_mass(to_format, args):
     """Will format the format with the user provided and/or default options."""
     #TODO:  Figure out a way to make this more reusable, might require some significant code modifications.
     return to_format % (args.mass_ports, "./results/masscan/mass_ips.txt", args.mass_rate, "./results/masscan/mass_results_" + time.strftime("%Y:%m:%d-%H:%M"))
-
-
-
-
-

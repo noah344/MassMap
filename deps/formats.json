@@ -9,5 +9,20 @@
             "output_format_opt": "--output-format=list",
             "output_filename_opt": "--output-filename=%s",
             "wait": "--wait=3"
-        }]
+        },
+        {
+            "scanner": "default_nmap",
+            "port_opt": "-p%s",
+            "os_detect_opt": "-O",
+            "serv_scan_opt": "-sV",
+            "script_scan_opt": "-sC",
+            "all_online_opt": "-Pn",
+            "max_rtt_opt": "--max-rtt-timeout=400ms",
+            "init_rtt_opt": "--initial-rtt-timeout=100ms",
+            "retries_opt": "--max-retries=3",
+            "host_timeout_opt": "--host-timeout=1m",
+            "quiet_opt": "-d",
+            "out_format_opt": "-oX %s"
+        }
+    ]
 }

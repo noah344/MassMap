@@ -1,2 +1,22 @@
 Implement nmap ping scan first to detect devices that are online, only then should you do masscan.
 Implement backend database to hold all of the data rather than using random files.
+Check for right versions of masscan/nmap
+Determine if you should disable default script scans with nmap or not.
+
+NSE SCRIPTS
+FTP Anonymous
+NFS Showmount
+http-headers maybe, http-methods, http-robots.txt
+
+
+Setup Apache http server with authentication screen so we can use the http-auth and http-auth-finder scripts.
+Figure out how to setup ipmi for ipmi-cipher-zero
+java jdwp
+mysql-dump-hashes
+realvnc-auth-bypass
+rmi-dumpregistry
+ssl-heartbleed
+
+unusual-port might be cool too
+
+vulners? Yes definitely

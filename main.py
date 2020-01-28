@@ -2,7 +2,7 @@
 import logging
 from user_functions import get_args, get_formats, make_dirs, bcolors
 from run_masscan import start_masscan
-from shutil import rmtree
+from run_nmap import start_nmap
 def main():
     """The main function for the program.  This calls all other functions."""
     setup_logging()
@@ -14,10 +14,12 @@ def main():
 
     logging.info("Starting Masscan")
     logging.debug("Starting Masscan Scan")
-    start_masscan(formats['masscan'])
+    mass_data = start_masscan(formats['masscan'])
     logging.info("Finished Masscan")
-    rmtree("./__pycache__")
 
+    logging.info("Starting Nmap")
+    start_nmap(formats['default_nmap'], mass_data)
+    logging.info("Finished Nmap")
 
 def setup_logging():
     """Responsible for setting up the logger to make output look nicer and to log to both the screen and a file."""
