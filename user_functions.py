@@ -1,4 +1,4 @@
-import logging, argparse, re, json, time
+import logging, argparse, re, json, time, subprocess
 from os import system, path, getcwd, remove, makedirs
 from netaddr import IPNetwork, iter_iprange, IPAddress
 from netaddr.core import AddrFormatError
@@ -25,11 +25,12 @@ def get_args():
     verbosity.add_argument("-v", "--verbose", action="store_true", help="Increases verbosity of the program.", default=False, required=False)
     verbosity.add_argument("-q", "--quiet", action="store_true", help="Decreases the verbosity of the program.", default=False, required=False)
     
-    mass_args.add_argument("-mR", "--mass-rate", type=int, help="Tells masscan the packet rate you wish for it to use. Default is 20000.", default=20000, required=False)
-    mass_args.add_argument("-mP", "--mass-ports", type=str, help="Tells masscan what ports you wish for it to scan. Default is 1-65535.", default="1-65535", required=False)
+    mass_args.add_argument("-mR", "--mass_rate", type=int, help="Tells masscan the packet rate you wish for it to use. Default is 20000.", default=20000, required=False)
+    mass_args.add_argument("-mP", "--mass_ports", type=str, help="Tells masscan what ports you wish for it to scan. Default is 1-65535.", default="1-65535", required=False)
 
     #TODO: Maybe this shouldn't be default, I dunno.
-    nmap_args.add_argument("-nE", "--no-extra-scans", action="store_true", help="Tells the program that you don't want to conduct extra scans using NSE scripts. This is on by default.", default=False, required=False)
+    nmap_args.add_argument("-nE", "--no_extra_scans", action="store_true", help="Tells the program that you don't want to conduct extra scans using NSE scripts. This is on by default.", default=False, required=False)
+    nmap_args.add_argument("-nT", "--nmap_threads", type=int, help="Tells the program how many concurrent nmap threads you wish to run at one time. Default is 20.", default=20, required=False)
 
     #User can supply either a file or a list of IPs seperated by commas in various formats i.e. 192.168.10.0/24,192.168.10.1-192.168.10.40,192.168.10.24.
     req_args.add_argument("IPs", type=str, help="Provide the full location of an IP file or a comma seperated list of IPs. Can be formatted in any of the following ways: \
@@ -110,6 +111,23 @@ def check_ports(to_check):
 
     except ValueError as err:
         logging.critical("Error with verifying ports. Exiting Program.\nError: %s" % err)
+        exit()
+
+def verify_versions():
+    """Makes sure that the user has the correct versions of nmap and masscan installed."""
+    try:
+        to_verify = {"nmap": "7.80", "masscan": "1.0.5"}
+        for i in to_verify:
+            logging.debug("Verifying that %s is version %s" % (i, to_verify[i]))
+            output = subprocess.run(["/usr/bin/%s" % i, "--version"], capture_output=True)
+
+            if "%s version %s" % (i, to_verify[i]) not in str(output).lower():
+                logging.critical("Incorrect %s version, please update %s to %s. Exiting." % (i, i, to_verify[i]))
+                exit()
+            logging.debug("%s is version %s" % (i, to_verify[i]))
+    
+    except Exception as error:
+        logging.critical("Error with verifying program versions: %s. Exiting." % error)
         exit()
 
 def make_dirs():

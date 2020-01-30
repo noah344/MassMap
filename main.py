@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 import logging
-from user_functions import get_args, get_formats, make_dirs, bcolors
+from user_functions import get_args, get_formats, make_dirs, verify_versions, bcolors
 from run_masscan import start_masscan
 from run_nmap import start_nmap
 def main():
@@ -10,6 +10,7 @@ def main():
     args, addresses, ports = get_args()
     logging.debug("Finished Verifying Arguments")
     formats = get_formats(args)
+    verify_versions()
     logging.info("Finished Initializing Program")
 
     logging.info("Starting Masscan")
@@ -18,7 +19,7 @@ def main():
     logging.info("Finished Masscan")
 
     logging.info("Starting Nmap")
-    start_nmap(formats['default_nmap'], mass_data)
+    start_nmap(formats['default_nmap'], mass_data, args)
     logging.info("Finished Nmap")
 
 def setup_logging():

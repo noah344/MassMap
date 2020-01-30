@@ -12,7 +12,7 @@ def start_masscan(mass_format):
         subprocess.run([i for i in mass_format.split(' ')])
         logging.debug("Masscan Scan Finished")
         logging.debug("Formatting Masscan Output")
-        #
+
         return(format_mass_out())
 
     except Exception as error:
@@ -25,32 +25,24 @@ def format_mass_out():
         file_list = glob.glob('./results/masscan/mass_results_*')
         latest_file = max(file_list, key=os.path.getctime)
         logging.debug("Reading Data from %s" % latest_file)
-        ip_port_dict = {}
+        ip_port_list = []
         with open(latest_file, "r") as file:
             lines = file.read().splitlines()
         for i in lines:
             #We don't want lines starting with # as they are comments.
             if "#" not in i:   
                 ip_port = i.split(" ")[2:4]
-                #Checks if the ip is already in the dictionary, if it is just append the port to the list.
-                if ip_port[1] in ip_port_dict:
-                    ip_port_dict[ip_port[1]].append(ip_port[0])
-                #If not add the new ip to the dictionary.
-                else:
-                    ip_port_dict[ip_port[1]] = [ip_port[0]]
+                ip_port_list.append("%s:%s" % (ip_port[1], ip_port[0]))
 
         #Opens a new file starting with formatted and writes the formatted output to it.  This is mostly just for the user in case they want to read it.
         #Actual data is sent back to main where it will eventually be fed to nmap.
         with open ("%sformatted_%s" % (latest_file[0:latest_file.index("mass_results")], latest_file[latest_file.index("mass_results"):]), "w") as file:
             logging.debug("Writing Formatted Data to %s" % file.name)
-            for i in ip_port_dict:
-                line_to_write = "%s - " % i
-                for j in ip_port_dict[i]:
-                    line_to_write += "%s, " % j
-                file.write("%s\n" % line_to_write[:-2])
+            for i in ip_port_list:
+                file.write("%s\n" % i)
 
         logging.debug("Finished Formatting Masscan Output")
-        return(ip_port_dict)
+        return(ip_port_list)
 
     except Exception as error:
         logging.critical("Error in formatting masscan output: %s" % error)

@@ -13,9 +13,7 @@
         {
             "scanner": "default_nmap",
             "port_opt": "-p%s",
-            "os_detect_opt": "-O",
             "serv_scan_opt": "-sV",
-            "script_scan_opt": "-sC",
             "all_online_opt": "-Pn",
             "max_rtt_opt": "--max-rtt-timeout=400ms",
             "init_rtt_opt": "--initial-rtt-timeout=100ms",
