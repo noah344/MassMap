@@ -6,7 +6,7 @@ def start_masscan(mass_format):
     #TODO: Format the data before it writes to file somehow, not sure what the best way to do this would be yet.
     #Maybe split this function so this is more of a runner and calls a seperate function that "starts" masscan.
     try:
-        logging.debug("Beggining Masscan Scan Using the Following Command: %s" % mass_format)
+        logging.debug("Beginning Masscan Scan Using the Following Command: %s" % mass_format)
         #For some reason subprocess doesn't like single strings for its commands and you need to split each flag into seperate strings.
         #TODO: Maybe have the formatter put the data into a list from the start so this little for loop isn't necessary.
         subprocess.run([i for i in mass_format.split(' ')])

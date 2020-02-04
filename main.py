@@ -3,6 +3,8 @@ import logging
 from user_functions import get_args, get_formats, make_dirs, verify_versions, bcolors
 from run_masscan import start_masscan
 from run_nmap import start_nmap
+from os import system
+
 def main():
     """The main function for the program.  This calls all other functions."""
     setup_logging()
@@ -19,8 +21,11 @@ def main():
     logging.info("Finished Masscan")
 
     logging.info("Starting Nmap")
-    start_nmap(formats['default_nmap'], mass_data, args)
+    start_nmap(formats['default_nmap'], formats["extra_nmap"], mass_data, args)
     logging.info("Finished Nmap")
+    #Needed to make sure the user can actually type in the console after the script is ran.  Weird issue with tqdm/multithreading that causes issues for some reason.
+    system("stty sane")
+    system("stty erase ^H")
 
 def setup_logging():
     """Responsible for setting up the logger to make output look nicer and to log to both the screen and a file."""
@@ -35,6 +40,7 @@ def setup_logging():
             logging.FileHandler("debug.log"),
             logging.StreamHandler()
         ])
+
     logging.root.handlers[0].setLevel(logging.DEBUG)
     logging.debug("Setting Up Directories")
     make_dirs()
