@@ -22,10 +22,11 @@ def main():
 
     logging.info("Starting Nmap")
     start_nmap(formats['default_nmap'], formats["extra_nmap"], mass_data, args)
-    logging.info("Finished Nmap")
+    logging.info("Finished Scan")
     #Needed to make sure the user can actually type in the console after the script is ran.  Weird issue with tqdm/multithreading that causes issues for some reason.
     system("stty sane")
     system("stty erase ^H")
+    system("rm -rf ./__pycache__ geckodriver.log")
 
 def setup_logging():
     """Responsible for setting up the logger to make output look nicer and to log to both the screen and a file."""
@@ -33,17 +34,20 @@ def setup_logging():
     #format sets up the logging messages to include the date/time of the message.
     #Level sets the level to INFO at the start, this will be modified shortly if the user provided -q or -v.
     #Handlers makes sure that the output is sent to both the screen and to the log file.
+    make_dirs("./logs")
     logging.basicConfig(
         format='%(asctime)s - %(levelname)s - %(message)s', 
         level=logging.INFO,
         handlers=[
-            logging.FileHandler("debug.log"),
+            logging.FileHandler("./logs/debug.log"),
             logging.StreamHandler()
         ])
 
     logging.root.handlers[0].setLevel(logging.DEBUG)
     logging.debug("Setting Up Directories")
-    make_dirs()
+    to_make = ["./results", "./results/masscan", "./results/nmap", "./results/nmap_http"]
+    for i in to_make:
+        make_dirs(i)
     logging.debug("Finished Setting Up Directories")
 
     #These just make the log output look nicer, could probably make this code clearner as well.

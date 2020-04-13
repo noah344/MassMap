@@ -15,18 +15,17 @@
             "port_opt": "-p%s",
             "serv_scan_opt": "-sV",
             "all_online_opt": "-Pn",
-            "max_rtt_opt": "--max-rtt-timeout=400ms",
+            "max_rtt_opt": "--max-rtt-timeout=1000ms",
             "init_rtt_opt": "--initial-rtt-timeout=100ms",
             "retries_opt": "--max-retries=3",
-            "host_timeout_opt": "--host-timeout=1m",
-            "vulners_opt": "--script=vulners"
+            "host_timeout_opt": "--host-timeout=1m"
         },
         {
             "scanner": "extra_nmap",
             "port_opt": "-p%s",
             "serv_scan_opt": "-sV",
             "all_online_opt": "-Pn",
-            "max_rtt_opt": "--max-rtt-timeout=400ms",
+            "max_rtt_opt": "--max-rtt-timeout=1000ms",
             "init_rtt_opt": "--initial-rtt-timeout=100ms",
             "retries_opt": "--max-retries=3",
             "host_timeout_opt": "--host-timeout=1m",

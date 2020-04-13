@@ -2,7 +2,7 @@
 from shutil import rmtree
 from os import remove
 
-to_remove = ["./debug.log", "./__pycache__", "./results", "./logs"]
+to_remove = ["./debug.log", "./__pycache__", "./results", "./logs", "./geckodriver.log"]
 
 for i in to_remove:
 	try:

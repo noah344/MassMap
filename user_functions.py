@@ -21,6 +21,7 @@ def get_args():
     mass_args = parser.add_argument_group("Masscan Arguments")
     nmap_args = parser.add_argument_group("Nmap Arguments")
     req_args = parser.add_argument_group("Required Arguments")
+    xtra_args = parser.add_argument_group("Extra Arguments")
 
     verbosity.add_argument("-v", "--verbose", action="store_true", help="Increases verbosity of the program.", default=False, required=False)
     verbosity.add_argument("-q", "--quiet", action="store_true", help="Decreases the verbosity of the program.", default=False, required=False)
@@ -32,6 +33,10 @@ def get_args():
     nmap_args.add_argument("-nE", "--no_extra_scans", action="store_true", help="Tells the program that you don't want to conduct extra scans using NSE scripts. This is on by default.", default=False, required=False)
     nmap_args.add_argument("-nT", "--nmap_threads", type=int, help="Tells the program how many concurrent nmap threads you wish to run at one time. Default is 20.", default=20, required=False)
 
+    xtra_args.add_argument("-sS", "--screenshot", action="store_true", help="Tells the program that you want to take screenshots using selenium web driver of detected web pages.", default=False, required=False)
+    xtra_args.add_argument("-pP", "--page_pulls", action="store_true", help="Tells the program that you want to pull down raw html code from discovered web pages.", default=False, required=False)
+    xtra_args.add_argument("-gB", "--gobuster", type=str, help="Tells the program that you want to run gobuster on discovered https ports, you must provide a wordlist.", default=False, required=False)
+    
     #User can supply either a file or a list of IPs seperated by commas in various formats i.e. 192.168.10.0/24,192.168.10.1-192.168.10.40,192.168.10.24.
     req_args.add_argument("IPs", type=str, help="Provide the full location of an IP file or a comma seperated list of IPs. Can be formatted in any of the following ways: \
         192.168.1.1, 192.168.1.2-192.168.1.5, 192.168.1.0/24.")
@@ -45,6 +50,15 @@ def verify_args(arg_list):
     elif arg_list.quiet:
         logging.getLogger().setLevel(logging.WARNING)
     logging.debug("Verifying Arguments")
+    if arg_list.screenshot:
+        make_dirs("./results/nmap_http/screenshots")
+    if arg_list.page_pulls:
+        make_dirs("./results/nmap_http/html")
+    if arg_list.gobuster:
+        if not path.isfile(arg_list.gobuster):
+            logging.critical("Failed to verify GoBuster wordlist: %s\nPlease try again." % arg_list.gobuster)
+            exit()
+        make_dirs("./results/nmap_http/gobuster")
     return arg_list, verify_ips(arg_list.IPs), verify_ports(arg_list.mass_ports)
 
 def verify_ips(to_verify):
@@ -130,17 +144,15 @@ def verify_versions():
         logging.critical("Error with verifying program versions: %s. Exiting." % error)
         exit()
 
-def make_dirs():
+def make_dirs(dir_to_make):
     """Will make directories required for the program to run correctly.  Definitely a better way to do this."""
     #TODO:  Make this better, maybe include this in the json file or something to make it easier to modify in the future.
-    to_make = ["./results", "./results/masscan", "./results/nmap", "./logs"]
-    for i in to_make:
-        if not path.exists(i):
-            logging.debug("Making %s Directory" % i)
-            makedirs(i)
-        else:
-            logging.debug("Directory %s Already Exists - Skipping" % i)
-    
+    if not path.exists(dir_to_make):
+        logging.debug("Making %s Directory" % dir_to_make)
+        makedirs(dir_to_make)
+    else:
+        logging.debug("Directory %s Already Exists - Skipping" % dir_to_make)
+
 def write_ips(addresses):
     """Writes provided ips to a file for use by masscan."""
     #TODO:  Have the program find the directory on its own.  This would be important if the user were to execute the program from some other directory.
