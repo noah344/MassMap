@@ -36,7 +36,8 @@ def get_args():
     xtra_args.add_argument("-sS", "--screenshot", action="store_true", help="Tells the program that you want to take screenshots using selenium web driver of detected web pages.", default=False, required=False)
     xtra_args.add_argument("-pP", "--page_pulls", action="store_true", help="Tells the program that you want to pull down raw html code from discovered web pages.", default=False, required=False)
     xtra_args.add_argument("-gB", "--gobuster", type=str, help="Tells the program that you want to run gobuster on discovered https ports, you must provide a wordlist.", default=False, required=False)
-    
+    xtra_args.add_argument("-rN", "--nikto", action="store_true", help="Tells the program that you want to run nikto against discovered web pages.", default=False, required=False)
+
     #User can supply either a file or a list of IPs seperated by commas in various formats i.e. 192.168.10.0/24,192.168.10.1-192.168.10.40,192.168.10.24.
     req_args.add_argument("IPs", type=str, help="Provide the full location of an IP file or a comma seperated list of IPs. Can be formatted in any of the following ways: \
         192.168.1.1, 192.168.1.2-192.168.1.5, 192.168.1.0/24.")
@@ -59,6 +60,8 @@ def verify_args(arg_list):
             logging.critical("Failed to verify GoBuster wordlist: %s\nPlease try again." % arg_list.gobuster)
             exit()
         make_dirs("./results/nmap_http/gobuster")
+    if arg_list.nikto:
+        make_dirs("./results/nmap_http/nikto")
     return arg_list, verify_ips(arg_list.IPs), verify_ports(arg_list.mass_ports)
 
 def verify_ips(to_verify):
@@ -166,10 +169,15 @@ def get_formats(args):
     """Will get the formats for all scanners used in this program from a json file located in ./deps/formats.json."""
     #TODO:  Add formats for nmap etc.  Maybe add structure to include directories that need to be made, see make_dirs above.
     logging.debug("Importing Formats",)
+    #Sets up a formats dictionary.
     formats = {}
+    #Opens the formats.json file and reads the data.
     with open("./deps/formats.json", "r") as file:
+        #Saves the data using pythons json module.
         data = json.load(file)
+        #Loops through each scanner in the data variable.
         for i in data["scanners"]:
+            #Saves all of the relevant data.
             scanner = i["scanner"]
             logging.debug("Importing %s Format" % scanner)
             formats[scanner] = add_scanner(i)

@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 import sys
-import subprocess
+from subprocess import run, DEVNULL
 from os import getcwd, path
 import qdarkstyle
 from PyQt5 import QtWidgets
@@ -27,7 +27,7 @@ class MainWindow(QtWidgets.QMainWindow):
         qtRectangle.moveCenter(centerpoint)
         self.move(qtRectangle.topLeft())
             
-        self.setFixedSize(1000,420)
+        self.setFixedSize(800,470)
         self.centralwidget = widget()
         self.setCentralWidget(self.centralwidget)
         self.setWindowTitle("MassMap")
@@ -48,10 +48,11 @@ class MainWindow(QtWidgets.QMainWindow):
         self.sshot_label = self.setup_label("Take Screenshots?", self.layout, 5, 0, "Select this if you want to take screenshots\nof discovered http web pages.")
         self.ppull_label = self.setup_label("Pull HTML?", self.layout, 6, 0, "Select this if you want to pull down web page raw\nhtml data for offline analysis.")
         self.gobust_label = self.setup_label("Run Gobuster?", self.layout, 7, 0, "Select this if you want to run gobuster against\ndetected http web pages.")
-        self.error_label = self.setup_label("ERROR", self.layout, 8, 0)
+        self.nikto_label = self.setup_label("Run Nikto?", self.layout, 8, 0, "Select this if you want to run nikto against\ndetected http web pages.")
+        self.error_label = self.setup_label("ERROR", self.layout, 9, 0)
         self.error_label.setStyleSheet("color: red;")
         self.error_label.hide()
-        self.results_label = self.setup_label('<a href="file:///root/Desktop/MassMap/results/html/">Click to View Results</a>', self.layout, 9, 0)
+        self.results_label = self.setup_label('<a href="file:///root/Desktop/MassMap/results/html/">View Results</a>', self.layout, 10, 0)
         self.results_label.linkActivated.connect(self.results_clicked)
         self.results_label.hide()
 
@@ -60,32 +61,30 @@ class MainWindow(QtWidgets.QMainWindow):
         self.take_sshot_chk = self.setup_checkbox(self.layout, 5, 1, True)
         self.page_pulls_chk = self.setup_checkbox(self.layout, 6, 1, True)
         self.run_gobust_chk = self.setup_checkbox(self.layout, 7, 1, True)
+        self.run_nikto_chk = self.setup_checkbox(self.layout, 8, 1, True)
 
         #Comboboxes
         self.type_of_ips_combo = self.setup_combo(["List of IPs", "IP File"], self.layout, 0, 1)
         self.type_of_ips_combo.currentTextChanged.connect(self.ip_combo_changed)
-        self.verbosity_combo = self.setup_combo(["Verbose Output", "Info Output", "Quiet Output"], self.layout, 2, 2)
-        self.verbosity_combo.setFixedWidth(250)
+        self.verbosity_combo = self.setup_combo(["Verbose", "Info", "Quiet"], self.layout, 2, 2)
         self.gob_wordlist_combo = self.setup_combo(["/dirb/common.txt", "/dirb/small.txt", "/dirb/big.txt", "/dirbuster/directory-list-2.3-small.txt", "/dirbuster/directory-list-2.3-medium.txt"], self.layout, 7, 2)
-        self.gob_wordlist_combo.setFixedWidth(250)
 
         #Textboxes
         self.ports_textbox = self.setup_textbox("1-65535", self.layout, 1, 1)
         self.rate_textbox = self.setup_textbox("100000", self.layout, 2, 1)
         self.ips_textbox = self.setup_textbox("", self.layout, 0, 2)
-        self.ips_textbox.setFixedWidth(250)
         self.threads_textbox = self.setup_textbox("20", self.layout, 3, 1)
 
         #Buttons
-        self.file_button = self.setup_button("Select File", self.layout, 0, 4)
+        self.file_button = self.setup_button("Select\nFile", self.layout, 0, 4)
+        self.file_button.setFont(font("Arial", 15))
         self.file_button.hide()
         self.file_button.clicked.connect(self.select_file)
 
-        self.done_button = self.setup_button("Start Scan", self.layout, 8, 1)
+        self.done_button = self.setup_button("Start Scan", self.layout, 9, 1)
         self.done_button.clicked.connect(self.check_opts)
 
-        self.exit_button = self.setup_button("Exit", self.layout, 8, 2)
-        self.exit_button.setFixedWidth(250)
+        self.exit_button = self.setup_button("Exit", self.layout, 9, 2)
         self.exit_button.clicked.connect(exit)
 
     def setup_label(self, text, layout, row, column, *tooltip):
@@ -177,16 +176,17 @@ class MainWindow(QtWidgets.QMainWindow):
             command = command + " -pP"
         if self.run_gobust_chk.isChecked():
             command = command + " -gB /usr/share/wordlists%s" % self.gob_wordlist_combo.currentText()
+        if self.run_nikto_chk.isChecked():
+            command = command + " -rN"
 
         verbosity = self.verbosity_combo.currentText()
-        if verbosity == "Verbose Output":
+        if verbosity == "Verbose":
             command = command + " -v"
-        elif verbosity == "Quiet Output":
+        elif verbosity == "Quiet":
             command = command + " -q" 
         
-        subprocess.run([i for i in command.split(' ')])
+        run([i for i in command.split(' ')])
         self.results_label.show()
-
 
     def check_numb(self, to_verify):
         try:
@@ -245,7 +245,7 @@ class MainWindow(QtWidgets.QMainWindow):
             return False
 
     def results_clicked(self, linkStr):
-        subprocess.run(["sensible-browser", "--new-window", "file:///root/Desktop/MassMap/results/nmap_http/"])
+        run(["sensible-browser", "--new-window", "file:///root/Desktop/MassMap/results/nmap_http/"], stdout=DEVNULL, stderr=DEVNULL)
 
 if __name__ == '__main__':
     my_app = QtWidgets.QApplication([])

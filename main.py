@@ -42,7 +42,7 @@ def setup_logging():
             logging.FileHandler("./logs/debug.log"),
             logging.StreamHandler()
         ])
-
+    logging.getLogger().setLevel(logging.INFO)
     logging.root.handlers[0].setLevel(logging.DEBUG)
     logging.debug("Setting Up Directories")
     to_make = ["./results", "./results/masscan", "./results/nmap", "./results/nmap_http"]
