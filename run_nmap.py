@@ -154,7 +154,7 @@ def conv_to_html():
     #Loops through each file.
     for i in files:
         #Sets up the command.
-        cmd = "xsltproc %s -o %s html" % (nmap_dir +i, html_dir + i[0:len(i)-3])
+        cmd = "xsltproc %s -o %shtml" % (nmap_dir +i, html_dir + i[0:len(i)-3])
         #Runs the command.
         subprocess.run([i for i in cmd.split(" ")])
     logging.debug("Done Converting XML Files to HTML")

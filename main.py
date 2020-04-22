@@ -24,8 +24,8 @@ def main():
     start_nmap(formats['default_nmap'], formats["extra_nmap"], mass_data, args)
     logging.info("Finished Scan")
     #Needed to make sure the user can actually type in the console after the script is ran.  Weird issue with tqdm/multithreading that causes issues for some reason.
-    system("stty sane")
     system("stty erase ^H")
+    system("stty sane")
     system("rm -rf ./__pycache__ geckodriver.log")
 
 def setup_logging():
