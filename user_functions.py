@@ -132,6 +132,7 @@ def check_ports(to_check):
 
 def verify_versions():
     """Makes sure that the user has the correct versions of nmap and masscan installed."""
+    #TODO:  Masscan apparently won't provide the right version if you do it this way. yum info shows proper version, need to fix.
     try:
         to_verify = {"nmap": "7.80", "masscan": "1.0.5"}
         for i in to_verify:
