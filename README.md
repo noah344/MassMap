@@ -1,6 +1,6 @@
 # MassMap
 ## Description
-A tool that combines the comprehensive scanning capabilities of Nmap with the speed of masscan.  This tool is designed to provide fast and accurate port and vulnerability scanning data for larg networks (think thousands to tens of thousands of IPs).
+A tool that combines the comprehensive scanning capabilities of Nmap with the speed of masscan.  This tool is designed to provide fast and accurate port and vulnerability scanning data for large networks (think thousands to tens of thousands of IPs).
 
 ## Motivation
 This project was created initially in an environment which I no longer have access to.  Having worked for several months on the project, I chose to create a new open-source version from scratch with various improvements.  The beginning goal of this project was to provide data similar to what can be found on shodan.io, but for IP's not accessible directly from the Internet (i.e. Internal private network IP addresses).  
