@@ -81,5 +81,3 @@ GUI
 All of the above and:
 - pyqt5 Pip module:  GUI programmed using pyqt5 framework.
 - qdarkstyle:  Darker version of pyqt5.
-
-# WILL ADD MORE AS TIME GOES ON BLAH BLAH
